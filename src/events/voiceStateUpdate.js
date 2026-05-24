@@ -165,13 +165,32 @@ if (now - lastCreation < VOICE_CREATE_COOLDOWN_MS) {
 
                 logger.info(`Creating temporary channel for user ${member.id} with user limit: ${userLimit}`);
 
-                const channelName = sanitizeVoiceChannelName(formatChannelName(nameTemplate, {
-                    username: member.user.username,
-                    userTag: member.user.tag,
-                    displayName: member.displayName,
-                    guildName: guild.name,
-                    channelName: triggerChannel.name
-                }));
+                // Get trigger channel name
+let baseName = triggerChannel.name
+    .replace('➕', '')
+    .replace('Create', '')
+    .trim()
+    .toLowerCase();
+
+// Add "vc"
+baseName = `${baseName} vc`;
+
+// Find next available number
+let number = 1;
+
+while (
+    guild.channels.cache.find(
+        c => c.type === ChannelType.GuildVoice &&
+        c.name.toLowerCase() === `${baseName} ${number}`
+    )
+) {
+    number++;
+}
+
+// Final channel name
+const channelName = sanitizeVoiceChannelName(
+    `${baseName} ${number}`
+);
 
                 if (!member.voice?.channel || member.voice.channel.id !== triggerChannel.id) {
                     logger.debug(`Member ${member.id} no longer in trigger channel ${triggerChannel.id}, aborting temporary channel creation`);
