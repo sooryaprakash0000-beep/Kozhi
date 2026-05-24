@@ -1,4 +1,4 @@
-import { ChannelType, PermissionFlagsBits } from 'discord.js';
+mport { ChannelType, PermissionFlagsBits } from 'discord.js';
 import {
     getJoinToCreateConfig, 
     registerTemporaryChannel, 
@@ -165,52 +165,13 @@ if (now - lastCreation < VOICE_CREATE_COOLDOWN_MS) {
 
                 logger.info(`Creating temporary channel for user ${member.id} with user limit: ${userLimit}`);
 
-const baseChannelName = sanitizeVoiceChannelName(
-    formatChannelName(nameTemplate, {
-        username: member.user.username,
-        userTag: member.user.tag,
-        displayName: member.displayName,
-        guildName: guild.name,
-        channelName: triggerChannel.name
-    })
-);
-
-// Count existing temporary channels with same name
-const existingChannels = guild.channels.cache.filter(c =>
-    c.type === ChannelType.GuildVoice &&
-    c.name.startsWith(baseChannelName)
-);
-
-// Final numbered channel name
-const channelName = `${baseChannelName} ${existingChannels.size + 1}`;
-
-const existingChannels = guild.channels.cache.filter(
-    c =>
-        c.type === ChannelType.GuildVoice &&
-        c.name.startsWith(baseChannelName)
-);
-
-const channelName = `${baseChannelName} ${existingChannels.size + 1}`;
-// Add automatic numbering
-const existingChannels = guild.channels.cache.filter(
-    c =>
-        c.type === ChannelType.GuildVoice &&
-        c.name.startsWith(channelName)
-);
-
-channelName = `${channelName} ${existingChannels.size + 1}`;
-
-// Find existing channels with same base name
-const existingChannels = guild.channels.cache.filter(
-    c =>
-        c.type === ChannelType.GuildVoice &&
-        c.name.startsWith(baseChannelName)
-);
-
-// Add next number
-const channelNumber = existingChannels.size + 1;
-
-const channelName = `${baseChannelName} ${channelNumber}`;
+                const channelName = sanitizeVoiceChannelName(formatChannelName(nameTemplate, {
+                    username: member.user.username,
+                    userTag: member.user.tag,
+                    displayName: member.displayName,
+                    guildName: guild.name,
+                    channelName: triggerChannel.name
+                }));
 
                 if (!member.voice?.channel || member.voice.channel.id !== triggerChannel.id) {
                     logger.debug(`Member ${member.id} no longer in trigger channel ${triggerChannel.id}, aborting temporary channel creation`);
@@ -347,6 +308,3 @@ function trimCooldownMapIfNeeded() {
         channelCreationCooldown.delete(entries[index][0]);
     }
 }
-
-
-
