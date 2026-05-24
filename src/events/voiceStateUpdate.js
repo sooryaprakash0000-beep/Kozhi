@@ -165,7 +165,7 @@ if (now - lastCreation < VOICE_CREATE_COOLDOWN_MS) {
 
                 logger.info(`Creating temporary channel for user ${member.id} with user limit: ${userLimit}`);
 
-let channelName = sanitizeVoiceChannelName(formatChannelName(nameTemplate, {
+const baseChannelName = sanitizeVoiceChannelName(formatChannelName(nameTemplate, {
     username: member.user.username,
     userTag: member.user.tag,
     displayName: member.displayName,
@@ -173,6 +173,13 @@ let channelName = sanitizeVoiceChannelName(formatChannelName(nameTemplate, {
     channelName: triggerChannel.name
 }));
 
+const existingChannels = guild.channels.cache.filter(
+    c =>
+        c.type === ChannelType.GuildVoice &&
+        c.name.startsWith(baseChannelName)
+);
+
+const channelName = `${baseChannelName} ${existingChannels.size + 1}`;
 // Add automatic numbering
 const existingChannels = guild.channels.cache.filter(
     c =>
