@@ -1,4 +1,4 @@
-mport { ChannelType, PermissionFlagsBits } from 'discord.js';
+import { ChannelType, PermissionFlagsBits } from 'discord.js';
 import {
     getJoinToCreateConfig, 
     registerTemporaryChannel, 
@@ -308,3 +308,6 @@ function trimCooldownMapIfNeeded() {
         channelCreationCooldown.delete(entries[index][0]);
     }
 }
+
+
+
