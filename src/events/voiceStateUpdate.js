@@ -165,12 +165,18 @@ if (now - lastCreation < VOICE_CREATE_COOLDOWN_MS) {
 
                 logger.info(`Creating temporary channel for user ${member.id} with user limit: ${userLimit}`);
 
-                const channelName = sanitizeVoiceChannelName(formatChannelName(nameTemplate, {
-                    username: member.user.username,
-                    userTag: member.user.tag,
-                    displayName: member.displayName,
-                    guildName: guild.name,
-                    channelName: triggerChannel.name
+       const existingChannels = guild.channels.cache.filter(c =>
+    c.parentId === triggerChannel.parentId &&
+    c.name.startsWith(triggerChannel.name)
+).size;
+
+const channelName = sanitizeVoiceChannelName(formatChannelName(nameTemplate, {
+    username: member.user.username,
+    userTag: member.user.tag,
+    displayName: member.displayName,
+    guildName: guild.name,
+    channelName: `${triggerChannel.name} ${existingChannels + 1}`
+}));
                 }));
 
                 if (!member.voice?.channel || member.voice.channel.id !== triggerChannel.id) {
